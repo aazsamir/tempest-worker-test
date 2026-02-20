@@ -1,0 +1,17 @@
+{
+    "name": "aazsamir/tempest-worker-test",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aazsamir\\TempestWorkerTest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "aazsamir",
+            "email": "sutikkukun@gmail.com"
+        }
+    ],
+    "require": {}
+}
