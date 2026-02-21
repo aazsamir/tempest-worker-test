@@ -121,6 +121,7 @@ class TestSuiteResults
                 }
 
                 $performanceOrder[$result->test][] = [
+                    'name' => $hostResult->name,
                     'host' => $hostResult->host,
                     'rps' => $result->rps,
                 ];
@@ -133,7 +134,7 @@ class TestSuiteResults
 
             foreach ($hosts as $host) {
                 $percentage = ($host['rps'] / $hosts[0]['rps']) * 100;
-                echo "  Host: {$host['host']}, RPS: {$host['rps']}, Performance: " . number_format($percentage, 2) . "%\n";
+                echo "  Host: {$host['name']} ({$host['host']}), RPS: {$host['rps']}, Performance: " . number_format($percentage, 2) . "%\n";
             }
         }
 
@@ -146,6 +147,7 @@ class HostTestResults
      * @param TestResult[] $results
      */
     public function __construct(
+        public string $name,
         public string $host,
         public array $results = [],
     ) {}
@@ -171,16 +173,16 @@ class Tester
     {
         $results = new TestSuiteResults();
 
-        foreach ($this->hosts as $host) {
-            $results->results[] = $this->runSuiteForHost($host);
+        foreach ($this->hosts as $name => $host) {
+            $results->results[] = $this->runSuiteForHost($name, $host);
         }
 
         return $results;
     }
 
-    private function runSuiteForHost(string $host): HostTestResults
+    private function runSuiteForHost(string $name, string $host): HostTestResults
     {
-        $results = new HostTestResults(host: $host);
+        $results = new HostTestResults($name, $host);
 
         $results->results[] = new TestResult(
             test: 'simple',
