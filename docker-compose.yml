@@ -1,0 +1,40 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "8021:80"
+    volumes:
+      - ./src/:/app/src/
+      - ./public/:/app/public/
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    ports:
+      - "8022:80"
+    volumes:
+      - ./src/:/app/src/
+      - ./public/:/app/public/
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    ports:
+      - "8023:8000"
+    volumes:
+      - ./src/:/app/src/
+      - ./public/:/app/public/
+
+  fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile.fpm
+    ports:
+      - "8024:8000"
+    volumes:
+      - ./src/:/app/src/
+      - ./public/:/app/public/

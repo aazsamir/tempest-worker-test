@@ -13,5 +13,19 @@
             "email": "sutikkukun@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "tempest/framework": "@dev"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../tempest-framework",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^7.4"
+    }
 }

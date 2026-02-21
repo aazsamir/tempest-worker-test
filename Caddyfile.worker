@@ -1,0 +1,15 @@
+{
+	skip_install_trust
+	auto_https off
+	frankenphp {
+		worker ./public/index.php
+	}
+}
+
+:80 {
+	log
+	root public/
+	encode zstd br gzip
+
+	php_server
+}
