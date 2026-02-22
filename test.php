@@ -196,6 +196,18 @@ class Tester
             test: 'users',
             rps: $this->measure(fn() => $this->testUsers($host)),
         );
+        $results->results[] = new TestResult(
+            test: 'users parallel',
+            rps: $this->measure(fn() => $this->testUsersParallel($host)),
+        );
+        $results->results[] = new TestResult(
+            test: 'echo',
+            rps: $this->measure(fn() => $this->testEcho($host)),
+        );
+        $results->results[] = new TestResult(
+            test: 'echo parallel',
+            rps: $this->measure(fn() => $this->testEchoParallel($host)),
+        );
 
         return $results;
     }
@@ -243,6 +255,64 @@ class Tester
 
             if ($response->status !== 200) {
                 throw new Exception("Users request $index failed with status: {$response->status}");
+            }
+        }
+    }
+
+    private function testUsersParallel(string $host): void
+    {
+        $requests = array_fill(0, $this->times, new Request(url: $host . '/users'));
+        $responses = $this->requester->requests($requests);
+
+        foreach ($responses as $index => $response) {
+            if ($response->status !== 200) {
+                throw new Exception("Users parallel request $index failed with status: {$response->status}");
+            }
+        }
+    }
+
+    private function testEcho(string $host): void
+    {
+        foreach (range(1, $this->times) as $index) {
+            $request = new Request(
+                url: $host . '/echo',
+                method: 'POST',
+                body: ['message' => $index],
+            );
+            $response = $this->requester->request($request);
+
+            if ($response->status !== 200) {
+                throw new Exception("Echo request $index failed with status: {$response->status}");
+            }
+
+            $responseData = json_decode($response->body, true);
+            if ($responseData['message'] !== $index) {
+                throw new Exception("Echo request $index failed with unexpected response: {$response->body}");
+            }
+        }
+    }
+
+    private function testEchoParallel(string $host): void
+    {
+        $requests = array_map(
+            fn ($index) => new Request(
+                url: $host . '/echo',
+                method: 'POST',
+                body: ['message' => $index],
+            ),
+            range(1, $this->times),
+        );
+
+        $responses = $this->requester->requests($requests);
+
+        foreach ($responses as $index => $response) {
+            if ($response->status !== 200) {
+                throw new Exception("Echo parallel request $index failed with status: {$response->status}");
+            }
+
+            $responseData = json_decode($response->body, true);
+            if ($responseData['message'] !== $index + 1) {
+                throw new Exception("Echo parallel request $index failed with unexpected response: {$response->body}");
             }
         }
     }
