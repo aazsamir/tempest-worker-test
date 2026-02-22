@@ -223,7 +223,7 @@ class Tester
 
     private function testSimple(string $host): void
     {
-        $request = new Request(url: $host);
+        $request = new Request(url: $host . '/');
 
         foreach (range(1, $this->times) as $index) {
             $response = $this->requester->request($request);
@@ -319,10 +319,10 @@ class Tester
 }
 
 $hosts = [
-    'server' => 'http://localhost:8021/',
-    'worker' => 'http://localhost:8022/',
-    'local' => 'http://localhost:8023/',
-    'fpm' => 'http://localhost:8024/',
+    'server' => 'http://localhost:8021',
+    'worker' => 'http://localhost:8022',
+    'local' => 'http://localhost:8023',
+    'fpm' => 'http://localhost:8024',
 ];
 $tester = new Requester();
 $times = 100;

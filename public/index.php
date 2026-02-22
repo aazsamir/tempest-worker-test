@@ -12,7 +12,7 @@ $frankenphpWorker = (bool) ($_ENV['FRANKENPHP_WORKER'] ?? false);
 if ($frankenphpWorker) {
     WorkerApplication::boot(
         root: __DIR__ . '/../',
-        maxLoops: 500,
+        maxLoops: -1,
     )->run();
 
     exit();

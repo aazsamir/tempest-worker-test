@@ -1,6 +1,4 @@
 FROM php:8.5-fpm-bookworm
-
-# Install dependencies
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
@@ -13,13 +11,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure nginx
 RUN rm /etc/nginx/sites-enabled/default
 COPY nginx.conf /etc/nginx/sites-available/app
 RUN ln -s /etc/nginx/sites-available/app /etc/nginx/sites-enabled/app
 
-# Configure supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /app
 COPY . /app
